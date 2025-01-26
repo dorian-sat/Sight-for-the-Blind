@@ -146,8 +146,9 @@ class BlindAssistanceSystem:
                     detected_objects.append(detection_info)
                     
                     # Print detection details
-                    print(f"Zone: {zone}, Object: {label}, Distance: {distance}cm")
-                    engine.say(f"Zone: {zone}, Object: {label}, Distance: {distance}cm")
+                    distance = round(distance * 0.0328084, 2)
+                    print(f"Object: {label}, Zone: {zone}, Distance: {distance}ft")
+                    engine.say(f"{label}, {zone}, {distance} feet")
                     engine.runAndWait()
                     
                     # Draw detection box and label
@@ -164,7 +165,7 @@ class BlindAssistanceSystem:
             key = f"{obj['zone']}_{obj['label']}"
             if (key not in self.last_announcement or 
                 current_time - self.last_announcement[key] >= self.min_announcement_interval):
-                self.engine.say(f"{obj['label']} detected in {obj['zone']} zone, {obj['distance']} centimeters away")
+                self.engine.say(f"{obj['label']}, {obj['zone']}, {obj['distance']} feet")
                 self.last_announcement[key] = current_time
         
         self.engine.runAndWait()
@@ -181,7 +182,7 @@ class BlindAssistanceSystem:
                 frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
                 
                 frame, detected_objects = self.detect_objects(frame)
-                self.announce_objects(detected_objects)
+                #self.announce_objects(detected_objects)
                 
                 cv2.imshow("Blind Assistance System", frame)
                 
